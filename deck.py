@@ -25,21 +25,33 @@ class BasicDeck(Deck):
 
         for d in range(num_single_decks):
             for i in range(13):
+                self.deck[i + 52*d] = 'C' + " " + str(i+1)
                 self.deck[i + 52*d] = 'C' + str(i+1)
                 self.deck[i+13 + 52*d] = 'H' + str(i+1)
                 self.deck[i+26 + 52*d] = 'D' + str(i+1)
                 self.deck[i+39 + 52*d] = 'S' + str(i+1)
+        random.shuffle(self.deck)
 
     def print_card(self, card_idx):
         x = self.card_suit(card_idx)
 
-        print("-------")
-        print(Deck.V+ "%d    " + Deck.V) %(self.card_value(card_idx))
-        print(Deck.V+ "      " + Deck.V)
-        print(Deck.V+ "  " +  x  + "   "  + Deck.V)
-        print(Deck.V+ "      " + Deck.V)
-        print(Deck.V+ "    %d" + Deck.V) %(self.card_value(card_idx))
-        print("--------")
+        if self.card_value(card_idx) < 10:
+            print("--------")
+            print(Deck.V+  "%d      " + Deck.V)%(self.card_value(card_idx))
+            print(Deck.V+ "       " + Deck.V)
+            print(Deck.V+ "   " +  x  + "   "  + Deck.V)
+            print(Deck.V+ "       " + Deck.V)
+            print(Deck.V+ "      %d"   + Deck.V)%(self.card_value(card_idx))
+            print("---------")
+        else:
+             print("-------")
+             print(Deck.V+ "%d    " + Deck.V) %(self.card_value(card_idx))
+             print(Deck.V+ "      " + Deck.V)
+             print(Deck.V+ "  " +  x  + "   "  + Deck.V)
+             print(Deck.V+ "      " + Deck.V)
+             print(Deck.V+ "    %d" + Deck.V) %(self.card_value(card_idx))
+             print("--------")
+
 
     def card_value(self, card_idx):
         return int(self.deck[card_idx][1:])
@@ -56,11 +68,6 @@ class BasicDeck(Deck):
         else:
             assert False, "Bad suit %s" % self.deck[card_idx][0]
 
-    def main(self):
-       print(self.club)
-       print(self.heart)
-       print(self.diamond)
-       print(self.spade)
 
-d=BasicDeck(int(sys.argv[1]))
+d = BasicDeck(int(sys.argv[1]))
 d.print_card(2)
