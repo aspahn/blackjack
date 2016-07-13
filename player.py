@@ -4,12 +4,17 @@ from deck import BasicDeck
 class Player():
 
     def __init__(self):
-        print("Hello welcome to Blackjack!")
         self.p_move = (" ")
+        self.bet = 0
 
     def player_move(self):
         self.p_move  = raw_input("Do you want to hit or stand? (Enter H or S): ")
+        print('')
         return self.p_move
+
+    def player_bet(self):
+        self.bet = int(raw_input("How much would you like to bet?: "))
+        return self.bet
 
 class Dealer():
 
@@ -17,11 +22,13 @@ class Dealer():
         self.the_player = Player()
         self.the_deck = BasicDeck(num_decks)
         self.total_player = []
+        self.suits_player = []
+        self.suits_dealer = []
         self.total_dealer = []
+        self.card_suit = ""
         self.card_value = 0
         self.turn = 0
         self.open_spots = []
-        self.hidden = False
         self.dealers_first_card = 0
         for d in range (num_decks):
             for i in range(52):
@@ -29,11 +36,13 @@ class Dealer():
 
     def player_card(self,num_decks):
         if self.turn ==  0 or self.turn == 2:
-            self.hidden = False
-            print("player this your card: ")
-            self.deal_card(num_decks)
+            self.pick_card(num_decks)
             self.total_player.append(self.card_value)
+            self.suits_player.append(self.card_suit)
+            print("Player, this is your hand: ")
+            self.the_deck.print_card(self.total_player,self.suits_player)
             print("This is your current score: " + str(self.player_score(num_decks)))
+            print('')
             self.turn +=1
         elif self.turn == 4:
             if self.player_score(num_decks) == 21:
@@ -41,58 +50,60 @@ class Dealer():
             else:
                 move = self.the_player.player_move()
                 if  move  == 'h' or move == 'H':
-                    print("player this your card: ")
-                    self.deal_card(num_decks)
+                    self.pick_card(num_decks)
                     self.total_player.append(self.card_value)
+                    self.suits_player.append(self.card_suit)
+                    print("Player, this is your hand: ")
+                    self.the_deck.print_card(self.total_player,self.suits_player)
                     self.player_score(num_decks)
                     self.turn +=1
                 else:
                     self.turn +=1
                 print("this is your score: " + str(self.player_score(num_decks)))
+                print('')
         else:
             pass
 
     def dealer_card(self,num_decks):
         if self.turn == 1:
-            self.hidden =  True
-            print("This is the dealer's first card. \nIt is face down, you will be able to see it on the dealer's next turn.")
-            self.deal_card(num_decks)
+            self.pick_card(num_decks)
             self.total_dealer.append(self.card_value)
+            self.suits_dealer.append(self.card_suit)
+            print("This is the dealer's first card. \nIt is face down, you will be able to see it on the dealer's next turn.")
+            self.the_deck.print_blank_card()
+            print('')
             self.turn +=1
         elif self.turn == 3:
-            self.hidden == False
-            print("This was the dealer's first card: ")
-            print self.the_deck.print_card(self.dealers_first_card)
-            print("This is the dealer's next card: ")
-            self.deal_card(num_decks)
+            print("This is the dealer's hand: ")
+            self.pick_card(num_decks)
             self.total_dealer.append(self.card_value)
+            self.suits_dealer.append(self.card_suit)
+            self.the_deck.print_card(self.total_dealer,self.suits_dealer)
             print("This is the dealer's current score: " + str(self.dealer_score(num_decks)))
+            print('')
             self.turn +=1
         elif self.turn ==5:
             if self.dealer_score(num_decks) == 21:
                 print("Blackjack!")
             else:
                 while self.dealer_score(num_decks) < 17:
-                    print("This is the dealer's next card: ")
-                    self.deal_card(num_decks)
+                    print("This is the dealer's hand: ")
+                    self.pick_card(num_decks)
                     self.total_dealer.append(self.card_value)
+                    self.suits_dealer.append(self.card_suit)
+                    self.the_deck.print_card(self.total_dealer,self.suits_dealer)
                     self.turn +=1
                 print("This is the dealer's score: " + str(self.dealer_score(num_decks)))
+                print('')
         else:
             pass
 
-    def deal_card(self,num_decks):
+    def pick_card(self,num_decks):
         if len(self.open_spots) > 0:
             x = self.open_spots[0]
-            if self.hidden == False:
-                print self.the_deck.print_card(x)
-                self.card_value =  self.the_deck.card_value(x)
-                del self.open_spots[0]
-            else:
-                print self.the_deck.print_blank_card()
-                self.dealers_first_card = x
-                self.card_value = self.the_deck.card_value(x)
-                del self.open_spots[0]
+            self.card_value =  self.the_deck.card_value(x)
+            self.card_suit = self.the_deck.card_suit(x)
+            del self.open_spots[0]
         else:
             print("The deck is full")
 
@@ -124,6 +135,3 @@ class Dealer():
             else:
                 d_score += self.total_dealer[i]
         return d_score
-
-
-
