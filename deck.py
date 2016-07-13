@@ -25,38 +25,86 @@ class BasicDeck(Deck):
 
         for d in range(num_single_decks):
             for i in range(13):
-                self.deck[i + 52*d] = 'C' + " " + str(i+1)
                 self.deck[i + 52*d] = 'C' + str(i+1)
                 self.deck[i+13 + 52*d] = 'H' + str(i+1)
                 self.deck[i+26 + 52*d] = 'D' + str(i+1)
                 self.deck[i+39 + 52*d] = 'S' + str(i+1)
         random.shuffle(self.deck)
 
-    def print_card(self, card_idx):
-        x = self.card_suit(card_idx)
+    def print_card(self,value,suit):
 
-        if self.card_value(card_idx) < 10:
-            print("--------")
-            print(Deck.V+  "%d      " + Deck.V)%(self.card_value(card_idx))
-            print(Deck.V+ "       " + Deck.V)
-            print(Deck.V+ "   " +  x  + "   "  + Deck.V)
-            print(Deck.V+ "       " + Deck.V)
-            print(Deck.V+ "      %d"   + Deck.V)%(self.card_value(card_idx))
-            print("---------")
-        else:
-             print("-------")
-             print(Deck.V+ "%d    " + Deck.V) %(self.card_value(card_idx))
-             print(Deck.V+ "      " + Deck.V)
-             print(Deck.V+ "  " +  x  + "   "  + Deck.V)
-             print(Deck.V+ "      " + Deck.V)
-             print(Deck.V+ "    %d" + Deck.V) %(self.card_value(card_idx))
-             print("--------")
+        self.print_horizontal(value)
+        self.print_value_l(value)
+        self.print_verticle(value)
+        self.print_suit(suit)
+        self.print_verticle(value)
+        self.print_value_r(value)
+        self.print_horizontal(value)
 
+
+    def print_horizontal(self,value):
+        for x in range(len(value)):
+            print "--------",
+            print "   ",
+        print ""
+
+    def print_value_l(self,value):
+        for x in value:
+            print "|",
+            print str(x).ljust(2),
+            'print "%2d"%x,'
+            print "   |",
+            print "  ",
+        print ""
+
+    def print_value_r(self,value):
+        for x in value:
+            print "|   ",
+            print "%2d"%x,
+            print "|",
+            print "  ",
+        print ""
+
+    def print_verticle(self,value):
+        for x in range(len(value)):
+            print "|       |",
+            print "  ",
+        print ""
+
+    def print_suit(self,suit):
+        for x in suit:
+            print "| ",
+            print x,
+            print "   |",
+            print "  ",
+        print ""
+
+    def print_blank_card(self):
+
+        print("--------")
+        print("|"+ "       " + "|")
+        print("|"+ "       " + "|")
+        print("|"+ "       "  + "|")
+        print("|"+ "       " + "|")
+        print("|" + "       "   + "|")
+        print("---------")
 
     def card_value(self, card_idx):
+        """ returns number on card
+
+        >>> b = BasicDeck(1)
+        >>> b.card_value(2)
+        3
+        """
         return int(self.deck[card_idx][1:])
 
     def card_suit(self, card_idx):
+        """ returns suit on card. C for club, H for heart, D for diamond, S for spade
+
+        >>> b = BasicDeck(1)
+        >>> b.card_suit(2)
+        u'\u2660'
+        """
         if self.deck[card_idx][0] == 'C':
             return Deck.CLUB
         elif self.deck[card_idx][0] == 'H':
@@ -68,6 +116,7 @@ class BasicDeck(Deck):
         else:
             assert False, "Bad suit %s" % self.deck[card_idx][0]
 
+#'if __name__ == "__main__":'
+ #   'import doctest'
+  #  'doctest.testmod()'
 
-d = BasicDeck(int(sys.argv[1]))
-d.print_card(2)
