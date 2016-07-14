@@ -1,3 +1,5 @@
+
+
 import sys
 import random
 
@@ -50,6 +52,16 @@ class BasicDeck(Deck):
 
     def print_value_l(self,value):
         for x in value:
+            if x == 1:
+                x = 'A'
+            if x == 11:
+                x = 'J'
+            elif x == 12:
+                x = 'Q'
+            elif x == 13:
+                x = 'K'
+            else:
+                pass
             print "|",
             print str(x).ljust(2),
             'print "%2d"%x,'
@@ -59,8 +71,18 @@ class BasicDeck(Deck):
 
     def print_value_r(self,value):
         for x in value:
+            if x == 1:
+                x = 'A'
+            if x == 11:
+                x = 'J'
+            elif x == 12:
+                x = 'Q'
+            elif x == 13:
+                x = 'K'
+            else:
+                pass
             print "|   ",
-            print "%2d"%x,
+            print "%2s"%str(x),
             print "|",
             print "  ",
         print ""
@@ -73,14 +95,32 @@ class BasicDeck(Deck):
 
     def print_suit(self,suit):
         for x in suit:
-            print "| ",
+            print "|  ",
             print x,
-            print "   |",
+            print "  |",
             print "  ",
         print ""
 
-    def print_blank_card(self):
+    def print_dealer_2card(self,value,suit):
+        x = value[1]
+        y = suit[1]
+        if x == 1:
+            x = 'A'
+        if x == 11:
+            x = 'J'
+        elif x == 12:
+            x = 'Q'
+        elif x == 13:
+            x = 'K'
+        print("--------" + "     " +"--------")
+        print("|"+ "       " + "|" + "    " +"|"+ str(x)  + "      " + "|")
+        print("|"+ "       " + "|" + "    " +"|"+ "       " + "|")
+        print("|"+ "       "  + "|" + "    " +"|"+ "   " + y  + "   " + "|")
+        print("|"+ "       " + "|" + "    " +"|"+ "       " + "|")
+        print("|" + "       "   + "|" + "    " +"|"+ "      " + str(x)  + "|")
+        print("---------" + "    " +"--------")
 
+    def print_blank_card(self):
         print("--------")
         print("|"+ "       " + "|")
         print("|"+ "       " + "|")
@@ -88,6 +128,8 @@ class BasicDeck(Deck):
         print("|"+ "       " + "|")
         print("|" + "       "   + "|")
         print("---------")
+
+
 
     def card_value(self, card_idx):
         """ returns number on card
@@ -115,8 +157,4 @@ class BasicDeck(Deck):
             return Deck.SPADE
         else:
             assert False, "Bad suit %s" % self.deck[card_idx][0]
-
-#'if __name__ == "__main__":'
- #   'import doctest'
-  #  'doctest.testmod()'
 
