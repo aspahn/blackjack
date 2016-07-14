@@ -12,8 +12,8 @@ class BlackJack():
         self.player_bank = 1000
         self.player_winnings = 0
         self.player_bets = 0
-        self.bet = 0
         self.the_turn = 0
+        self.bet = 0
 
     def winner(self,num_decks):
         if self.the_dealer.player_score(num_decks) == 21:
@@ -50,7 +50,12 @@ class BlackJack():
             print('')
             print("This is currently how much money you have in your bank account: " + str(self.player_bank))
             print('')
-            self.bet = int(raw_input("How much would you like to bet: "))
+            while True:
+                self.bet = int(raw_input("How much would you like to bet: "))
+                if self.bet > self.player_bank:
+                    print("Sorry you don't have that much money. Please enter another amount: ")
+                else:
+                    break
             print('')
             while self.the_turn < 6:
                 self.the_dealer.player_card(num_decks)
@@ -70,6 +75,7 @@ class BlackJack():
                 sys.exit()
 
             # Need to reset all hand state
+            self.the_dealer.new_hand()
             self.the_turn = 0
 
     def player_money(self,num_decks):
