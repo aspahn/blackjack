@@ -69,7 +69,7 @@ class Dealer():
             self.pick_card(num_decks)
             self.total_dealer.append(self.card_value)
             self.suits_dealer.append(self.card_suit)
-            print("This is the dealer's first card. \nIt is face down, you will be able to see it on the dealer's next turn.")
+            print("This is the dealer's hand: ")
             self.the_deck.print_blank_card()
             print('')
             self.turn +=1
@@ -78,8 +78,7 @@ class Dealer():
             self.pick_card(num_decks)
             self.total_dealer.append(self.card_value)
             self.suits_dealer.append(self.card_suit)
-            self.the_deck.print_card(self.total_dealer,self.suits_dealer)
-            print("This is the dealer's current score: " + str(self.dealer_score(num_decks)))
+            self.the_deck.print_dealer_2card(self.total_dealer,self.suits_dealer)
             print('')
             self.turn +=1
         elif self.turn ==5:
@@ -91,7 +90,7 @@ class Dealer():
                     self.pick_card(num_decks)
                     self.total_dealer.append(self.card_value)
                     self.suits_dealer.append(self.card_suit)
-                    self.the_deck.print_card(self.total_dealer,self.suits_dealer)
+                    self.the_deck.print_card(self .total_dealer,self.suits_dealer)
                     self.turn +=1
                 print("This is the dealer's score: " + str(self.dealer_score(num_decks)))
                 print('')
@@ -135,3 +134,10 @@ class Dealer():
             else:
                 d_score += self.total_dealer[i]
         return d_score
+
+    def new_hand(self):
+        del self.suits_dealer[:]
+        del self.suits_player[:]
+        del self.total_dealer[:]
+        del self.total_player[:]
+        self.turn = 0
