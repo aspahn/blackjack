@@ -1,5 +1,3 @@
-
-
 import sys
 import random
 
@@ -117,8 +115,9 @@ class BasicDeck(Deck):
         print("|"+ "       " + "|" + "    " +"|"+ "       " + "|")
         print("|"+ "       "  + "|" + "    " +"|"+ "   " + y  + "   " + "|")
         print("|"+ "       " + "|" + "    " +"|"+ "       " + "|")
-        print("|" + "       "   + "|" + "    " +"|"+ "      " + str(x)  + "|")
+        print("|" + "       "   + "|" + "    " +"|"+ "      " +  str(x) + "|")
         print("---------" + "    " +"--------")
+
 
     def print_blank_card(self):
         print("--------")
