@@ -6,25 +6,75 @@ class Player():
     def __init__(self):
         self.p_move = (" ")
         self.bet = 0
+        self.bank = 1000
+        self.the_dealer = Dealer()
 
     def player_move(self):
         self.p_move  = raw_input("Do you want to hit or stand? (Enter H or S): ")
         print('')
         return self.p_move
 
+    def player_move_auto(self,myHand = []):
+        total = 0
+        for i in myHand:
+            if i > 10:
+                total += 10
+            elif i == 1:
+                if total > 10:
+                    total += 1
+                else:
+                    total += 11
+            else:
+                total += i
+        if total < 17:
+            return 'H'
+        else:
+            return 'S'
+
     def player_bet(self):
-        self.bet = int(raw_input("How much would you like to bet?: "))
+         while True:
+            self.bet = int(raw_input("How much would you like to bet?: "))
+            if self.bet > self.bank:
+                print("Sorry you don't have that much money. Please bet again.")
+            else:
+                break
+         self.bank -= self.bet
+         return self.bet
+
+    def player_auto_bet(self):
+        if self.bank < 25:
+            self.bet = self.bank
+        else:
+            self.bet = 25
+        self.bank -= self.bet
         return self.bet
+
+    def card_count(self, cards = [],num_decks):
+        remaining_decks = num_decks - self.the_dealer.reshuffle_deck()
+        running_count = 0
+        true_count = 0
+        for i in cards:
+            if i in range (2,7):
+                running_count += 1
+            elif i in range (7,10):
+                running_count += 0
+            else:
+                running_count -= -1
+        true_count = running_count/remaining_decks
+
+
 
 class Dealer():
 
     def __init__(self, num_decks):
         self.the_player = Player()
         self.the_deck = BasicDeck(num_decks)
+        self.cards_used = []
         self.total_player = []
         self.suits_player = []
         self.suits_dealer = []
         self.total_dealer = []
+        self.deck_shuffles = 0
         self.card_suit = ""
         self.card_value = 0
         self.turn = 0
@@ -38,6 +88,7 @@ class Dealer():
         if self.turn ==  0 or self.turn == 2:
             self.pick_card(num_decks)
             self.total_player.append(self.card_value)
+            self.cards_used.appennd(self.card_value)
             self.suits_player.append(self.card_suit)
             print("Player, this is your hand: ")
             self.the_deck.print_card(self.total_player,self.suits_player)
@@ -48,10 +99,11 @@ class Dealer():
             if self.player_score(num_decks) == 21:
                 print("Blackjack!")
             else:
-                move = self.the_player.player_move()
+                move = self.the_player.player_move_auto()
                 if  move  == 'h' or move == 'H':
                     self.pick_card(num_decks)
                     self.total_player.append(self.card_value)
+                    self.cards_used.appennd(self.card_value)
                     self.suits_player.append(self.card_suit)
                     print("Player, this is your hand: ")
                     self.the_deck.print_card(self.total_player,self.suits_player)
@@ -68,6 +120,7 @@ class Dealer():
         if self.turn == 1:
             self.pick_card(num_decks)
             self.total_dealer.append(self.card_value)
+            self.cards_used.appennd(self.card_value)
             self.suits_dealer.append(self.card_suit)
             print("This is the dealer's hand: ")
             self.the_deck.print_blank_card()
@@ -77,6 +130,7 @@ class Dealer():
             print("This is the dealer's hand: ")
             self.pick_card(num_decks)
             self.total_dealer.append(self.card_value)
+            self.cards_used.appennd(self.card_value)
             self.suits_dealer.append(self.card_suit)
             self.the_deck.print_dealer_2card(self.total_dealer,self.suits_dealer)
             print('')
@@ -89,6 +143,7 @@ class Dealer():
                     print("This is the dealer's hand: ")
                     self.pick_card(num_decks)
                     self.total_dealer.append(self.card_value)
+                    self.cards_used.appennd(self.card_value)
                     self.suits_dealer.append(self.card_suit)
                     self.the_deck.print_card(self .total_dealer,self.suits_dealer)
                     self.turn +=1
@@ -98,13 +153,23 @@ class Dealer():
             pass
 
     def pick_card(self,num_decks):
-        if len(self.open_spots) > 0:
-            x = self.open_spots[0]
-            self.card_value =  self.the_deck.card_value(x)
-            self.card_suit = self.the_deck.card_suit(x)
-            del self.open_spots[0]
-        else:
-            print("The deck is full")
+        while True:
+            if len(self.open_spots) > 0:
+                x = self.open_spots[0]
+                self.card_value =  self.the_deck.card_value(x)
+                self.card_suit = self.the_deck.card_suit(x)
+                del self.open_spots[0]
+                break
+            else:
+                self.reshuffle_deck(self)
+
+    def reshuffle_deck(self):
+        for d in range (num_decks):
+            for i in range(52):
+                self.open_spots.append(i+1)
+        self.the_deck.shuffle_deck()
+        self.deck_shuffles += 1
+        return self.deck_shuffles
 
     def player_score(self,num_decks):
         p_score = 0
@@ -119,7 +184,6 @@ class Dealer():
             else:
                 p_score += self.total_player[i]
         return p_score
-
 
     def dealer_score(self,num_decks):
         d_score = 0
