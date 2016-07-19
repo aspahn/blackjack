@@ -11,17 +11,18 @@ class Player():
         self.bet_max = bet_spread_high
         self.num_decks = num_decks
 
-    def player_move(self, auto, myHand=[]):
+    def player_move(self, auto, myHand=[], dealerHand=[]):
         if auto == False:
             self.p_move = raw_input("Do you want to hit or stand? (Enter H or S): ")
             print('')
             return self.p_move.upper()
         else:
-            return self.player_move_auto(myHand)
+            return self.player_move_auto(myHand, dealerHand)
 
-    def player_move_auto(self, myHand=[]):
+    def player_move_auto(self, myHand=[], dealerHand=[]):
         total = 0
         num_aces = 0
+        dealer_card = dealerHand[1]
         for i in myHand:
             if i > 10:
                 total += 10
@@ -35,10 +36,64 @@ class Player():
             total -= 10
             num_aces -= 1
 
-        if total < 17:
-            return 'H'
+        'use table for 9 - 16'
+        user_table_array = [["HDDDDHHHHH"],
+                            ["DDDDDDDDHH"],
+                            ["DDDDDDDDDH"],
+                            ["HHSSSHHHHH"],
+                            ["SSSSSHHHHH"],
+                            ["SSSSSHHHHH"],
+                            ["SSSSSHHHHH"],
+                            ["SSSSSHHHHH"]]
+
+        'use table for 13 - 18 when there is an ace remaining'
+        user_table_ace_array = [["HHHDDHHHHH"],
+                                ["HHHDDHHHHH"],
+                                ["HHDDDHHHHH"],
+                                ["HHDDDHHHHH"],
+                                ["HDDDDHHHHH"],
+                                ["SDDDDSSHHH"]]
+
+        'use table from http://www.hitorstand.net/strategy.php'
+        if (1):
+            if dealer_card > 9:
+                offset = 8
+            elif dealer_card == 1:
+                offset = 9
+            else:
+                offset = dealer_card - 2
+
+            if (num_aces == 0):
+                index = total - 9
+                if (total < 9):
+                    return 'H'
+                elif (total > 16):
+                    return 'S'
+                else:
+                    line = user_table_array[index]
+                    val = line[0][offset]
+                    return val
+            else:
+                index = total - 13
+                if (total < 13):
+                    return 'H'
+                elif (total > 18):
+                    return 'S'
+                else:
+                    line = user_table_ace_array[index]
+                    val = line[0][offset]
+                    return val
         else:
-            return 'S'
+            'Hit on soft 17'
+            if (total == 17):
+                if (num_aces > 0):
+                    return 'H'
+                else:
+                    return 'S'
+            elif total < 17:
+                return 'H'
+            else:
+                return 'S'
 
     def player_bet(self, auto, cards_used=[]):
         if auto == False:
@@ -48,7 +103,7 @@ class Player():
                     print("Sorry you don't have that much money. Please bet again.")
                 else:
                     break
-            self.bank -= self.bet
+            # self.bank -= self.bet
             return self.bet
         else:
             # return self.player_bet_auto()
@@ -56,7 +111,6 @@ class Player():
 
     'http://www.blackjackgeeks.com/cardcounting/betting.php'
     'Table minimum is $5'
-
     def player_bet_auto_card_count(self, cards_used=[]):
         x = self.card_count_hi_lo(cards_used)
         if x < 2:
@@ -69,7 +123,7 @@ class Player():
         if (self.bet > self.bank):
             self.bet = self.bank
 
-        self.bank -= self.bet
+        # self.bank -= self.bet
         return self.bet
 
     def player_bet_auto(self):
@@ -77,7 +131,7 @@ class Player():
             self.bet = self.bank
         else:
             self.bet = 50
-        self.bank -= self.bet
+        # self.bank -= self.bet
         return self.bet
 
     def card_count_hi_lo(self, cards_used=[]):
@@ -99,6 +153,8 @@ class Player():
             true_count = running_count
 
         return true_count
+
+
 class Dealer():
     def __init__(self, num_decks):
         self.cards_used = []
@@ -132,7 +188,7 @@ class Dealer():
                 self.the_deck.print_card(self.total_dealer, self.suits_dealer)
             else:
                 while self.player_score(num_decks) < 22:
-                    move = player.player_move(auto, self.total_player)
+                    move = player.player_move(auto, self.total_player, self.total_dealer)
                     if move == 'S':
                         break
                     self.pick_card(num_decks)
@@ -142,6 +198,11 @@ class Dealer():
                     print("Player, this is your hand: ")
                     self.the_deck.print_card(self.total_player, self.suits_player)
                     self.player_score(num_decks)
+
+                    if move == 'D':
+                        if player.bank > player.bet *2:
+                            player.bet *= 2
+                        break
                 print("this is your score: " + str(self.player_score(num_decks)))
                 print('')
                 if self.player_score(num_decks) < 22:
