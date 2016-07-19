@@ -3,6 +3,8 @@ import random
 
 
 class Deck(object):
+
+    'comment out for no output'
     #CLUB = u'\u2660'
     #HEART = u'\u2665'
     #DIAMOND = u'\u2666'
@@ -139,9 +141,19 @@ class BasicDeck(Deck):
         print("---------")
 
     def card_value(self, card_idx):
+        """ returns number on card
+        >>> b = BasicDeck(1)
+        >>> b.card_value(2)
+        3
+        """
         return int(self.deck[card_idx][1:])
 
     def card_suit(self, card_idx):
+        """ returns suit on card. C for club, H for heart, D for diamond, S for spade
+        >>> b = BasicDeck(1)
+        >>> b.card_suit(2)
+        u'\u2660'
+        """
         if self.deck[card_idx][0] == 'C':
             return Deck.CLUB
         elif self.deck[card_idx][0] == 'H':
@@ -152,3 +164,5 @@ class BasicDeck(Deck):
             return Deck.SPADE
         else:
             assert False, "Bad suit %s" % self.deck[card_idx][0]
+
+
