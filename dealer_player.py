@@ -3,13 +3,12 @@ from deck import BasicDeck
 
 
 class Player():
-    def __init__(self, bet_spread_low, bet_spread_high, num_decks):
+    def __init__(self, bet_spread_low, bet_spread_high):
         self.p_move = (" ")
         self.bet = 0
         self.bank = 100000
         self.betting_unit = bet_spread_low
         self.bet_max = bet_spread_high
-        self.num_decks = num_decks
 
     def player_move(self, auto, myHand=[], dealerHand=[]):
         if auto == False:
@@ -95,7 +94,7 @@ class Player():
             else:
                 return 'S'
 
-    def player_bet(self, auto, cards_used=[]):
+    def player_bet(self, auto, card_count, cards_used=[]):
         if auto == False:
             while True:
                 self.bet = int(raw_input("How much would you like to bet?: "))
@@ -106,8 +105,10 @@ class Player():
             # self.bank -= self.bet
             return self.bet
         else:
-            # return self.player_bet_auto()
-            return self.player_bet_auto_card_count(cards_used)
+            if card_count == True:
+                return self.player_bet_auto_card_count(cards_used)
+            else:
+                 return self.player_bet_auto()
 
     'http://www.blackjackgeeks.com/cardcounting/betting.php'
     'Table minimum is $5'

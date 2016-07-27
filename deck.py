@@ -3,18 +3,19 @@ import random
 
 
 class Deck(object):
+    def __init__(self,output):
+        self.output = output
 
-    'comment out for no output'
-    #CLUB = u'\u2660'
-    #HEART = u'\u2665'
-    #DIAMOND = u'\u2666'
-    #SPADE = u'\u2663'
-
-    'no ouput'
-    CLUB = 'C'
-    HEART = 'H'
-    DIAMOND = "D"
-    SPADE = "S"
+        if self.output == True:
+            CLUB = u'\u2660'
+            HEART = u'\u2665'
+            DIAMOND = u'\u2666'
+            SPADE = u'\u2663'
+        else:
+            CLUB = 'C'
+            HEART = 'H'
+            DIAMOND = "D"
+            SPADE = "S"
 
     # Abstract
 
@@ -27,8 +28,10 @@ class Deck(object):
 
 
 class BasicDeck(Deck):
-    def __init__(self, num_single_decks):
-        self.deck = [" "] * (52 * num_single_decks)
+    def __init__(self, num_single_decks,output):
+        self.output = output
+        self.num_deck = num_single_decks
+        self.deck = [" "] * (52 * num_deck)
 
         for d in range(num_single_decks):
             #populates shoe array
