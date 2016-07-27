@@ -1,3 +1,4 @@
+
 #! /usr/bin/env python
 
 import sys, os
@@ -6,43 +7,47 @@ from dealer_player import Player
 
 
 class BlackJack():
-    def __init__(self, num_decks, betting_unit, bet_max):
-        self.the_dealer = Dealer(num_decks)
-        self.the_player = Player(betting_unit, bet_max, num_decks)
-        self.num_decks = num_decks
-        self.betting_unit = betting_unit
-        self.bet_max = bet_max
+    def __init__(self):
+        self.the_dealer = Dealer(self.num_decks)
+        self.the_player = Player(self.betting_unit, self.bet_max, self.num_decks)
         self.player_winnings = 0
         self.player_losings = 0
         self.the_turn = 0
         self.num_win = 0
         self.num_lose = 0
         self.num_tie = 0
+        self.betting_unit = str(sys.argv[7])
+        self.bet_max = str(sys.argv[6])
+        self.repition = str(sys.argv[2])
+        self.auto = str(sys.argv[3])
+        self.card_count = str(argv[4])
+        self.num_decks = str(sys.argv[1])
+        self.ouput = str(sys.argv[5])
         self.stdoutTemp = sys.stdout
 
-    def winner(self, num_decks):
-        if self.the_dealer.player_score(num_decks) == 21 and len(self.the_dealer.total_player) == 2 and \
-                        self.the_dealer.dealer_score(num_decks) == 21 and len(self.the_dealer.total_dealer) == 2:
+    def winner(self):
+        if self.the_dealer.player_score(self.num_decks) == 21 and len(self.the_dealer.total_player) == 2 and \
+                        self.the_dealer.dealer_score(self.num_decks) == 21 and len(self.the_dealer.total_dealer) == 2:
             return 0
-        elif self.the_dealer.player_score(num_decks) == 21 and len(self.the_dealer.total_player) == 2:
+        elif self.the_dealer.player_score(self.num_decks) == 21 and len(self.the_dealer.total_player) == 2:
             return 2
-        elif (21 - self.the_dealer.player_score(num_decks)) < 0:
+        elif (21 - self.the_dealer.player_score(self.num_decks)) < 0:
             return -1
-        elif (21 - self.the_dealer.dealer_score(num_decks)) < 0:
+        elif (21 - self.the_dealer.dealer_score(self.num_decks)) < 0:
             return 1
-        elif (21 - self.the_dealer.dealer_score(num_decks)) == (21 - self.the_dealer.player_score(num_decks)):
+        elif (21 - self.the_dealer.dealer_score(self.num_decks)) == (21 - self.the_dealer.player_score(self.num_decks)):
             return 0
-        elif (21 - self.the_dealer.dealer_score(num_decks)) < (21 - self.the_dealer.player_score(num_decks)):
+        elif (21 - self.the_dealer.dealer_score(self.num_decks)) < (21 - self.the_dealer.player_score(self.num_decks)):
             return -1
-        elif (21 - self.the_dealer.dealer_score(num_decks)) > (21 - self.the_dealer.player_score(num_decks)):
+        elif (21 - self.the_dealer.dealer_score(self.num_decks)) > (21 - self.the_dealer.player_score(self.num_decks)):
             return 1
         else:
             pass
 
     def play(self):
-        'uncomment to turn off output'
-        sys.stdout = open('/dev/null', 'w')
-        sys.stdout = open('nul', 'w')
+        if self.output == False:
+            sys.stdout = open('/dev/null', 'w')
+            sys.stdout = open('nul', 'w')
 
         print('')
         print("     "'*' * 5 + " Welcome to Blackjack!" + "     "'*' * 5)
@@ -57,31 +62,30 @@ class BlackJack():
             "You will start with $100,000 in you bank and your winnings and bets will be subtracted or added to it. \nGood luck!")
         print('')
         num_hands = 0
-        auto = True
         self.the_dealer.the_deck.shuffle_deck()
-        while self.the_player.bank > 0 and num_hands < 5000:
+        while self.the_player.bank > 0 and num_hands < self.repition:
             self.the_dealer.new_hand()
             print('')
             print("This is currently how much money you have in your bank account: " + str(self.the_player.bank))
             print('')
-            self.the_player.player_bet(auto, self.the_dealer.cards_used)
+            self.the_player.player_bet(self.auto, self.the_dealer.cards_used,self.card_count)
             print('')
             while self.the_turn < 6:
-                self.the_dealer.player_card(self.num_decks, self.the_player, auto)
+                self.the_dealer.player_card(self.num_decks, self.the_player, self.auto)
                 self.the_turn += 1
                 self.the_dealer.dealer_card(self.num_decks)
                 self.the_turn += 1
-            if self.winner(self.num_decks) == 1:
+            if self.winner() == 1:
                 print("Congrats Player! You have won: " + str(self.the_player.bet))
                 self.num_win += 1
                 self.the_player.bank += self.the_player.bet
                 self.player_winnings += self.the_player.bet
-            elif self.winner(self.num_decks) == 2:
+            elif self.winner() == 2:
                 print("Congrats you have gotten blackjack! and won: " + str(self.the_player.bet * 1.5))
                 self.num_win += 1
                 self.the_player.bank += self.the_player.bet * (1.5)
                 self.player_winnings += self.the_player.bet * (1.5)
-            elif self.winner(self.num_decks) == -1:
+            elif self.winner() == -1:
                 print("Sorry Player. You have lost: " + str(self.the_player.bet))
                 self.num_lose += 1
                 self.the_player.bank -= self.the_player.bet
@@ -128,6 +132,8 @@ class BlackJack():
         print('')
         print("This is how much money you have lost: " + str(self.player_losings))
 
-
-b = BlackJack(1, 25, 250)
-b.play()
+if len(sys.argv) != 5:
+    print("Welcome to blackjack help.\n In order to play you will need to enter the following in order: how many decks you would like to play with, how many hands will be played,whether you would like to card count, whether you would like an auto player or not, if you would like to see the ouput, and the max and min bets.\n For the number of decks you want to play with type -d and the number of decks you wish to play with.\n If you want this program to play with an automatic player type -a and True or False if you would like an interactive player.\n If you want this program to card count type -c and True or False if you don't want card counting. \n For the number of hands you like to be played type -r and the number of hands.\n If you would like to see the output of the game being played type -o and True or False if you don't want to see the game being played.\n To set the min bet type -mi and the min bet.\n To set the max bet type -ma and the max bet.")
+else:
+    b = BlackJack(int(sys.argv[1]), int(sys.argv[2]), str(sys.argv[3]), str(sys.argv[4]), str(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]))
+    b.play()
